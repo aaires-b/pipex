@@ -15,7 +15,11 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <errno.h>
+#include <string.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 #include "../libft/libft.h"
 
 typedef struct t_list
@@ -30,6 +34,10 @@ typedef struct t_list
 	char *file2;
 	int cmd1_flag;
 	int cmd2_flag;
+	int fd_file1;
+	int fd_file2; 
+	char *path_cmd2;
+	char *path_cmd1;
 } t_cmds;
 
 void parse_cmds();
