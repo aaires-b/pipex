@@ -25,8 +25,10 @@ void check_exist(char **av)
 	if(av[2][0] == '\0' || av[3][0] == '\0')
 	{
 		ft_putstr_fd("Command not found", 2);
+		close(fd_file1);
 		exit(127);
 	}
+	close(fd_file1);
 }
 
 char  **find_path( char **env)
@@ -90,7 +92,6 @@ void executer(char *cmd_name, char **cmd, char **env)
 	i = 0;
 	while(get_cmds()->path2[i])
 	{
-
 		free(get_cmds()->path2[i]);
 		i++;
 	}
