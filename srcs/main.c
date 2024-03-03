@@ -28,6 +28,7 @@ void free_loop(char **str)
 		free(str[i]);
 		i++;
 	}
+	free(str);
 }
 
 void free_all()
@@ -46,7 +47,7 @@ void child_process(int *fd, char *cmd_name, char **av, char **env)
 	if(fd_file1 == -1)
 	{
 		strerror(errno);
-		exit(1);
+		exit(errno);
 	}
 	close(fd[0]);
 	dup2(fd_file1, 0); //  the new file descriptor  is adjusted so that it now
@@ -65,7 +66,7 @@ void child_process2(int *fd, char *cmd_name, char **av, char **env)
 	if(fd_file2 == -1)
 	{
 		strerror(errno);
-		exit(1);
+		exit(errno);
 	}
 	close(fd[1]);
 	dup2(fd[0], 0); //  the new file descriptor  is adjusted so that it now
@@ -79,6 +80,7 @@ int main(int ac, char **av, char **env)  // env = da-me as environmental variabl
 {
 	if(ac == 5)
 	{
+		check_exist(av);
 		get_cmds()->cmd1 = ft_split(av[2], ' ');
 		get_cmds()->cmd2 = ft_split(av[3], ' ');
 		int fd[2];
@@ -89,13 +91,13 @@ int main(int ac, char **av, char **env)  // env = da-me as environmental variabl
 		if(pipe(fd) == -1)
 		{
 			strerror(errno);
-			exit(1);
+			exit(errno);
 		}
 		proc_id1 = fork();
 		if(proc_id1 == -1)
 		{
 			strerror(errno);
-			exit(1);
+			exit(errno);
 		}
 		if(proc_id1 == 0)
 		{
@@ -107,7 +109,7 @@ int main(int ac, char **av, char **env)  // env = da-me as environmental variabl
 			if(proc_id2 == -1)
 			{
 				strerror(errno);
-				exit(1);
+				exit(errno);
 			}
 			if(proc_id2 == 0)
 			{
@@ -122,8 +124,8 @@ int main(int ac, char **av, char **env)  // env = da-me as environmental variabl
 	}
 	else
 	{
-		////mensagem de erro
-	 	exit(1);
+		ft_putstr_fd("Wrong number of arguments", 2);
+		exit(0);
 	}
 	return (0);
 }

@@ -6,14 +6,14 @@
 #    By: aaires-b <aaires-b@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/02 13:25:41 by aaires-b          #+#    #+#              #
-#    Updated: 2024/03/03 17:07:09 by aaires-b         ###   ########.fr        #
+#    Updated: 2024/03/03 20:30:06 by aaires-b         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 NAME = pipex
 
-SRCSFILES = parsing.c main.c 
+SRCSFILES = parsing.c main.c ft_miniprintf.c 
 
 SRCSDIR = srcs/
 OBJDIR = obj/

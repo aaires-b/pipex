@@ -12,6 +12,22 @@
 
 #include "../includes/pipex.h"
 
+void check_exist(char **av)
+{
+	int fd_file1;
+	
+	fd_file1 = open(av[1], O_RDONLY);
+	if(fd_file1 == -1)
+	{
+		strerror(errno);
+		exit(errno);
+	}
+	if(av[2][0] == '\0' || av[3][0] == '\0')
+	{
+		ft_putstr_fd("Command not found", 2);
+		exit(127);
+	}
+}
 
 char  **find_path( char **env)
 {
@@ -62,9 +78,15 @@ void executer(char *cmd_name, char **cmd, char **env)
 {
 	int i;
 	get_cmds()->path2 = find_path(env);
-	printf("%s\n", cmd_name);
 	get_cmds()->path_cmd = path2(get_cmds()->path2, cmd_name);
-
+	if(access(get_cmds()->path_cmd, F_OK) != 0)
+	{
+		free_loop(get_cmds()->path2);
+		free_loop(get_cmds()->cmd1);
+		free_loop(get_cmds()->cmd2);
+		ft_putstr_fd(strerror(errno), 2);
+		exit(errno);
+	}
 	i = 0;
 	while(get_cmds()->path2[i])
 	{
@@ -73,5 +95,5 @@ void executer(char *cmd_name, char **cmd, char **env)
 		i++;
 	}
 	execve(get_cmds()->path_cmd, cmd, env);
-	printf("EXEC NOT RUN");
+	//printf("EXEC NOT RUN");
 }
