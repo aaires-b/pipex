@@ -12,64 +12,113 @@
 
 #include "../includes/pipex.h"
 
-void erro(int errno)
+t_cmds *get_cmds()
 {
-	strerror(errno);
-	exit(1);
+	static t_cmds cmds;
+	return(&cmds);
 }
-void child_process(int *fd, char **av, char **env)
+
+void free_loop(char **str)
+{
+	int i;
+
+	i = 0;
+	while(str[i])
+	{
+		free(str[i]);
+		i++;
+	}
+}
+
+void free_all()
+{
+	free(get_cmds()->path2);
+	free(get_cmds()->path_cmd);
+	free_loop(get_cmds()->cmd1);
+	free_loop(get_cmds()->cmd2);
+}
+
+void child_process(int *fd, char *cmd_name, char **av, char **env)
 {
 	int fd_file1;
 	
-	fd_file1 = open(av[1], O_RDONLY, 0777);
+	fd_file1 = open(av[1], O_RDONLY);
 	if(fd_file1 == -1)
-		erro(errno);
+	{
+		strerror(errno);
+		exit(1);
+	}
+	close(fd[0]);
 	dup2(fd_file1, 0); //  the new file descriptor  is adjusted so that it now
 							//refers to the same open file description as old fd.
 	dup2(fd[1],1);
 	close(fd[1]);
-	close(fd[0]);
-	executer(av[2], env);
-	//printf("aqui\n");
+	executer(cmd_name, get_cmds()->cmd1, env);
 }
 
-void child_process2(int *fd, char **av, char **env)
+void child_process2(int *fd, char *cmd_name, char **av, char **env)
 {
 	int fd_file2;
 	
+	(void)fd;
 	fd_file2 = open(av[4], O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if(fd_file2 == -1)
-		erro(errno);
-	dup2(fd[1], 0); //  the new file descriptor  is adjusted so that it now
+	{
+		strerror(errno);
+		exit(1);
+	}
+	close(fd[1]);
+	dup2(fd[0], 0); //  the new file descriptor  is adjusted so that it now
 							//refers to the same open file description as old fd.
 	dup2(fd_file2, 1);
-	close(fd[1]);
 	close(fd[0]);
-	executer(av[3], env);
-	//printf("aqui\n");
+	executer(cmd_name, get_cmds()->cmd2, env);
 }
 
-int main(int ac,char **av, char **env)  // env = da-me as environmental variables do meu pc. 
+int main(int ac, char **av, char **env)  // env = da-me as environmental variables do meu pc. 
 {
 	if(ac == 5)
 	{
+		get_cmds()->cmd1 = ft_split(av[2], ' ');
+		get_cmds()->cmd2 = ft_split(av[3], ' ');
 		int fd[2];
 		int proc_id1;
+		int proc_id2;
 
+		proc_id2 = 0;
 		if(pipe(fd) == -1)
-			erro(errno);
+		{
+			strerror(errno);
+			exit(1);
+		}
 		proc_id1 = fork();
 		if(proc_id1 == -1)
-			erro(errno);
+		{
+			strerror(errno);
+			exit(1);
+		}
 		if(proc_id1 == 0)
-			child_process(fd, av, env);
-		int proc_id2 = fork();
-		if(proc_id2 == -1)
-			erro(errno);
-		if(proc_id2 == 0)
-			child_process2(fd, av, env);
+		{
+			child_process(fd, get_cmds()->cmd1[0], av, env);
+		}
+		if(proc_id1 != 0)
+		{
+			proc_id2 = fork();
+			if(proc_id2 == -1)
+			{
+				strerror(errno);
+				exit(1);
+			}
+			if(proc_id2 == 0)
+			{
+				child_process2(fd,get_cmds()->cmd2[0], av, env);
+			}
+		}
+		close(fd[0]);
+		close(fd[1]);
 		waitpid(proc_id1, NULL, 0);
 		waitpid(proc_id2, NULL, 0);
+		free_all();
 	}
 	else
 	{

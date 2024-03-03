@@ -12,19 +12,20 @@
 
 #include "../includes/pipex.h"
 
-char  *path( char **env)
+
+char  **find_path( char **env)
 {
 	int i;
 	int k;
 
 	k = 0;
 	i = 0;
-	char *path;
+	char **path;
 	while(env[i])
 	{
 		if(ft_strncmp("PATH=", env[i], 4) == 0)
 		{
-			path = ft_split(env[i][k + 5],':');
+			path = ft_split(&env[i][k + 5],':');
 			return(path);
 		}
 		i++;
@@ -45,6 +46,7 @@ char *path2(char **path, char *cmd)
 		path2 = ft_strjoin(path[i], a);
 		if(access(path2, F_OK) == 0)
 		{
+			free(a);
 			return(path2);
 		}
 		free(path2);
@@ -56,9 +58,20 @@ char *path2(char **path, char *cmd)
 
 
 
-void executer(char *cmd, char **env)
+void executer(char *cmd_name, char **cmd, char **env)
 {
-	char *path;
-	path = path2(find_path(env), cmd);
-	execve(path, cmd, env);
+	int i;
+	get_cmds()->path2 = find_path(env);
+	printf("%s\n", cmd_name);
+	get_cmds()->path_cmd = path2(get_cmds()->path2, cmd_name);
+
+	i = 0;
+	while(get_cmds()->path2[i])
+	{
+
+		free(get_cmds()->path2[i]);
+		i++;
+	}
+	execve(get_cmds()->path_cmd, cmd, env);
+	printf("EXEC NOT RUN");
 }

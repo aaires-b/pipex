@@ -27,21 +27,21 @@ typedef struct t_list
 	int ac;
 	char **av;
 	char **env;
-	char **path;
-	char *cmd1;
-	char *cmd2;
+	char **cmd1;
+	char **cmd2;
 	char *file1;
 	char *file2;
 	int cmd1_flag;
 	int cmd2_flag;
 	int fd_file1;
 	int fd_file2; 
-	char *path_cmd2;
-	char *path_cmd1;
+	char *path_cmd;
+	char **path2;
 } t_cmds;
 
 void parse_cmds();
 t_cmds *get_cmds();
+void executer(char *cmd_name, char **cmd, char **env);
 
 #endif
 

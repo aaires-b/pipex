@@ -6,7 +6,7 @@
 #    By: aaires-b <aaires-b@student.42lisboa.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/02 13:25:41 by aaires-b          #+#    #+#              #
-#    Updated: 2024/03/02 14:48:29 by aaires-b         ###   ########.fr        #
+#    Updated: 2024/03/03 17:07:09 by aaires-b         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ SRCSFILES = parsing.c main.c
 SRCSDIR = srcs/
 OBJDIR = obj/
 CC = cc 
-CFLAGS = -Wall -Werror -Wextra -g -fsanitize=address
+CFLAGS = -Wall -Werror -Wextra -g #-fsanitize=address
 ## -g Includes debugging information in the executable
 ## -fsanitize=address : Enables AddressSanitizer, a memory error detector. It helps catch memory-related errors like buffer overflows
 ## bufferoverflow : are used to store and manipulate data, temporaryly. They have a fixed size allocated during program execution. 
