@@ -108,6 +108,7 @@ int main(int ac, char **av, char **env)  // env = da-me as environmental variabl
 			proc_id2 = fork();
 			if(proc_id2 == -1)
 			{
+				
 				strerror(errno);
 				exit(errno);
 			}

@@ -85,7 +85,7 @@ void executer(char *cmd_name, char **cmd, char **env)
 		free_loop(get_cmds()->cmd1);
 		free_loop(get_cmds()->cmd2);
 		ft_putstr_fd(strerror(errno), 2);
-		exit(errno);
+		exit(127);
 	}
 	i = 0;
 	while(get_cmds()->path2[i])
@@ -95,5 +95,4 @@ void executer(char *cmd_name, char **cmd, char **env)
 		i++;
 	}
 	execve(get_cmds()->path_cmd, cmd, env);
-	//printf("EXEC NOT RUN");
 }
