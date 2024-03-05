@@ -25,32 +25,28 @@
 
 typedef struct t_list
 {
-	int		ac;
 	char	**av;
 	char	**env;
 	char	**cmd1;
 	char	**cmd2;
 	char	*file1;
 	char	*file2;
-	int		cmd1_flag;
-	int		cmd2_flag;
-	int		flag_1;
-	int		fd_file1;
-	int		fd_file2; 
+	int		fd[2];
 	char	*path_cmd;
-	char	**path2;
+	char	**pre_path;
 }	t_cmds;
 
 t_cmds	*get_cmds(void);
-void	executer(char *cmd_name, char **cmd, char **env);
+void	executer(char *cmd_name, char **cmd);
 void	check_exist(char **av);
 void	free_loop(char **str);
 void	free_all(void);
 void	msg_erro(char *str);
-void	atoa(int proc_id2, int *fd, char **av, char **env);
-void	set_cmds(char **av);
-void	child_process2(int *fd, char *cmd_name, char **av, char **env);
-void	child_process(int *fd, char *cmd_name, char **av, char **env);
-void	close_files(int *fd);
+void	atoa(int proc_id2, int status);
+void	set_cmds(char **av, char **env);
+void	child_process2(char *cmd_name);
+void	child_process(char *cmd_name);
+void	close_files(void);
+void	error(void);
 
 #endif

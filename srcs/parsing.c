@@ -18,20 +18,17 @@ void	check_exist(char **av)
 
 	fd_file1 = open(av[1], O_RDONLY);
 	if (fd_file1 == -1)
-	{
-		strerror(errno);
-		exit(errno);
-	}
+		error();
 	if (av[2][0] == '\0' || av[3][0] == '\0')
 	{
-		ft_putstr_fd("Command not found", 2);
+		ft_putstr_fd("Command not found\n", 2);
 		close(fd_file1);
 		exit(127);
 	}
 	close(fd_file1);
 }
 
-char	**find_path( char **env)
+char	**find_path(void)
 {
 	int		i;
 	int		k;
@@ -39,11 +36,11 @@ char	**find_path( char **env)
 
 	k = 0;
 	i = 0;
-	while (env[i])
+	while (get_cmds()->env[i])
 	{
-		if (ft_strncmp("PATH=", env[i], 4) == 0)
+		if (ft_strncmp("PATH=", get_cmds()->env[i], 4) == 0)
 		{
-			path = ft_split(&env[i][k + 5], ':');
+			path = ft_split(&get_cmds()->env[i][k + 5], ':');
 			return (path);
 		}
 		i++;
@@ -74,25 +71,25 @@ char	*path2(char **path, char *cmd)
 	return (NULL);
 }
 
-void	executer(char *cmd_name, char **cmd, char **env)
+void	executer(char *cmd_name, char **cmd)
 {
 	int	i;
 
-	(get_cmds())->path2 = find_path(env);
-	(get_cmds())->path_cmd = path2(get_cmds()->path2, cmd_name);
-	if (access(get_cmds()->path_cmd, F_OK) != 0)
+	(get_cmds())->pre_path = find_path();
+	(get_cmds())->path_cmd = path2(get_cmds()->pre_path, cmd_name);
+	if (!(get_cmds()->path_cmd) || access(get_cmds()->path_cmd, F_OK) != 0)
 	{
-		free_loop(get_cmds()->path2);
+		free_loop(get_cmds()->pre_path);
 		free_loop(get_cmds()->cmd1);
 		free_loop(get_cmds()->cmd2);
-		ft_putstr_fd(strerror(errno), 2);
+		ft_putstr_fd("Command not found\n", 2);
 		exit(127);
 	}
 	i = 0;
-	while (get_cmds()->path2[i])
+	while (get_cmds()->pre_path[i])
 	{
-		free(get_cmds()->path2[i]);
+		free(get_cmds()->pre_path[i]);
 		i++;
 	}
-	execve(get_cmds()->path_cmd, cmd, env);
+	execve(get_cmds()->path_cmd, cmd, get_cmds()->env);
 }

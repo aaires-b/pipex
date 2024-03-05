@@ -24,63 +24,67 @@ t_cmds	*get_cmds(void)
 	return (&cmds);
 }
 
-void	child_process(int *fd, char *cmd_name, char **av, char **env)
+void	child_process(char *cmd_name)
 {
 	int	fd_file1;
 
-	fd_file1 = open(av[1], O_RDONLY);
+	fd_file1 = open(get_cmds()->av[1], O_RDONLY);
 	if (fd_file1 == -1)
 	{
 		strerror(errno);
 		exit(errno);
 	}
-	close(fd[0]);
+	close(get_cmds()->fd[0]);
 	dup2(fd_file1, 0);
-	dup2(fd[1], 1);
-	close(fd[1]);
-	executer(cmd_name, get_cmds()->cmd1, env);
+	dup2(get_cmds()->fd[1], 1);
+	close(get_cmds()->fd[1]);
+	close(fd_file1);
+	executer(cmd_name, get_cmds()->cmd1);
 }
 
-void	child_process2(int *fd, char *cmd_name, char **av, char **env)
+void	child_process2(char *cmd_name)
 {
 	int	fd_file2;
 
-	fd_file2 = open(av[4], O_RDWR | O_CREAT | O_TRUNC, 0644);
+	fd_file2 = open(get_cmds()->av[4], O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (fd_file2 == -1)
 	{
 		strerror(errno);
 		exit(errno);
 	}
-	close(fd[1]);
-	dup2(fd[0], 0);
+	close(get_cmds()->fd[1]);
+	dup2(get_cmds()->fd[0], 0);
 	dup2(fd_file2, 1);
-	close(fd[0]);
-	executer(cmd_name, get_cmds()->cmd2, env);
+	close(fd_file2);
+	close(get_cmds()->fd[0]);
+	executer(cmd_name, get_cmds()->cmd2);
 }
 
 int	main(int ac, char **av, char **env)
 {
-	int	fd[2];
 	int	proc_id1;
 	int	proc_id2;
+	int	stat;
 
+	stat = 0;
 	proc_id2 = 0;
 	if (ac != 5)
-		msg_erro("Wrong number of arguments");
+		msg_erro("Wrong number of arguments\n");
 	check_exist(av);
-	set_cmds(av);
-	if (pipe(fd) == -1)
-		msg_erro("Pipe didn't create");
+	if (pipe(get_cmds()->fd) == -1)
+		msg_erro("Error creating pipe\n");
 	proc_id1 = fork();
 	if (proc_id1 == -1)
-		msg_erro("Process didn't create");
+		msg_erro("Error creating process\n");
+	set_cmds(av, env);
 	if (proc_id1 == 0)
-		child_process(fd, get_cmds()->cmd1[0], av, env);
+		child_process(get_cmds()->cmd1[0]);
 	if (proc_id1 != 0)
-		atoa(proc_id2, fd, av, env);
-	close_files(fd);
-	waitpid(proc_id1, NULL, 0);
-	waitpid(proc_id2, NULL, 0);
+		atoa(proc_id2, stat);
+	close_files();
+	waitpid(proc_id1, &stat, 0);
+	waitpid(proc_id2, &stat, 0);
+	stat = WEXITSTATUS(stat);
 	free_all();
-	return (0);
+	return (stat);
 }
