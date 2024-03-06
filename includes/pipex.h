@@ -47,6 +47,7 @@ void	set_cmds(char **av, char **env);
 void	child_process2(char *cmd_name);
 void	child_process(char *cmd_name);
 void	close_files(void);
-void	error(void);
+void	help(char *av);
+void	help2(int fd1, int fd2);
 
 #endif

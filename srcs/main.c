@@ -31,8 +31,12 @@ void	child_process(char *cmd_name)
 	fd_file1 = open(get_cmds()->av[1], O_RDONLY);
 	if (fd_file1 == -1)
 	{
-		strerror(errno);
-		exit(errno);
+		free_loop(get_cmds()->cmd1);
+		free_loop(get_cmds()->cmd2);
+		ft_putstr_fd("No such file or directory: ", 2);
+		help(get_cmds()->av[1]);
+		close_files();
+		exit(127);
 	}
 	close(get_cmds()->fd[0]);
 	dup2(fd_file1, 0);
@@ -49,8 +53,12 @@ void	child_process2(char *cmd_name)
 	fd_file2 = open(get_cmds()->av[4], O_RDWR | O_CREAT | O_TRUNC, 0644);
 	if (fd_file2 == -1)
 	{
-		strerror(errno);
-		exit(errno);
+		free_loop(get_cmds()->cmd1);
+		free_loop(get_cmds()->cmd2);
+		ft_putstr_fd("No such file or directory: ", 2);
+		close_files();
+		help(get_cmds()->av[4]);
+		exit(127);
 	}
 	close(get_cmds()->fd[1]);
 	dup2(get_cmds()->fd[0], 0);

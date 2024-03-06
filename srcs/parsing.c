@@ -15,17 +15,25 @@
 void	check_exist(char **av)
 {
 	int	fd_file1;
+	int	fd_file2;
 
 	fd_file1 = open(av[1], O_RDONLY);
-	if (fd_file1 == -1)
-		error();
-	if (av[2][0] == '\0' || av[3][0] == '\0')
+	fd_file2 = open(av[4], O_RDWR | O_CREAT | O_TRUNC, 0644);
+	if (fd_file1 == -1 && fd_file2 == -1)
 	{
-		ft_putstr_fd("Command not found\n", 2);
-		close(fd_file1);
+		ft_putstr_fd("No such file or directory: ", 2);
+		help(av[4]);
 		exit(127);
 	}
-	close(fd_file1);
+	if (av[2][0] == '\0' || av[3][0] == '\0')
+	{
+		ft_putstr_fd("Command not found: ", 2);
+		help(av[2]);
+		help(av[3]);
+		help2(fd_file1, fd_file2);
+		exit(127);
+	}
+	help2(fd_file1, fd_file2);
 }
 
 char	**find_path(void)
@@ -75,14 +83,16 @@ void	executer(char *cmd_name, char **cmd)
 {
 	int	i;
 
+	i = 0;
 	(get_cmds())->pre_path = find_path();
 	(get_cmds())->path_cmd = path2(get_cmds()->pre_path, cmd_name);
 	if (!(get_cmds()->path_cmd) || access(get_cmds()->path_cmd, F_OK) != 0)
 	{
+		ft_putstr_fd("Command not found: ", 2);
+		help(cmd_name);
 		free_loop(get_cmds()->pre_path);
 		free_loop(get_cmds()->cmd1);
 		free_loop(get_cmds()->cmd2);
-		ft_putstr_fd("Command not found\n", 2);
 		exit(127);
 	}
 	i = 0;

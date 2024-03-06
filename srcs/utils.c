@@ -6,11 +6,25 @@
 /*   By: aaires-b <aaires-b@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/04 20:19:43 by aaires-b          #+#    #+#             */
-/*   Updated: 2024/03/05 15:02:24 by aaires-b         ###   ########.fr       */
+/*   Updated: 2024/03/05 19:08:07 by aaires-b         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
+
+void	help(char *str)
+{
+	write(2, str, ft_strlen(str));
+	write(2, "\n", 1);
+}
+
+void	help2(int fd1, int fd2)
+{
+	if (fd1 > 0)
+		close(fd1);
+	if (fd2 > 0)
+		close(fd2);
+}
 
 void	set_cmds(char **av, char **env)
 {
@@ -37,6 +51,8 @@ void	atoa(int proc_id2, int status)
 
 void	close_files(void)
 {
-	close(get_cmds()->fd[0]);
-	close(get_cmds()->fd[1]);
+	if (get_cmds()->fd[0] > 0)
+		close(get_cmds()->fd[0]);
+	if (get_cmds()->fd[1] > 0)
+		close(get_cmds()->fd[1]);
 }
