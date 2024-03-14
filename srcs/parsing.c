@@ -56,9 +56,9 @@ char	**find_path(void)
 	return (NULL);
 }
 
-int check_path(char **path, char *cmd)
+int	check_path(char **path, char *cmd)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while (path[i])
