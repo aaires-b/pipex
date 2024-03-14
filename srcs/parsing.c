@@ -56,6 +56,20 @@ char	**find_path(void)
 	return (NULL);
 }
 
+int check_path(char **path, char *cmd)
+{
+	int i;
+
+	i = 0;
+	while (path[i])
+	{
+		if (!access(cmd, F_OK))
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 char	*path2(char **path, char *cmd)
 {
 	int		i;
@@ -63,6 +77,8 @@ char	*path2(char **path, char *cmd)
 	char	*path2;
 
 	i = 0;
+	if (check_path(path, cmd) == 1)
+		return (cmd);
 	a = ft_strjoin("/", cmd);
 	while (path[i] != NULL)
 	{
