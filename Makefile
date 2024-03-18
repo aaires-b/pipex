@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aaires-b <aaires-b@student.42lisboa.com    +#+  +:+       +#+         #
+#    By: aaires-b <aaires-b@@student.42.fr>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/03/02 13:25:41 by aaires-b          #+#    #+#              #
-#    Updated: 2024/03/05 15:10:15 by aaires-b         ###   ########.fr        #
+#    Updated: 2024/03/18 14:07:04 by aaires-b         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -37,20 +37,31 @@ SRCS = $(addprefix $(SRCSDIR), $(SRCSFILES))
 
 OBJS = $(patsubst $(SRCSDIR)%.c, $(OBJDIR)%.o, $(SRCS))
 
+RESET=\033[0m
+BOLD=\033[1m
+RED=\033[31m
+GREEN=\033[32m
+YELLOW=\033[33m
+BLUE=\033[34m
+MAGENTA=\033[35m
+CYAN=\033[36m
+
 all : $(NAME)
 # : = dependencie
 
+$(OBJDIR)%.o: $(SRCSDIR)%.c | $(OBJDIR)
+	@$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
+
 $(NAME): $(LIBFT) $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) $(LIBFTFLAGS) -o $(NAME)
+	@echo "$(GREEN)Compiling pipex $(RESET)"
+	@$(CC) $(CFLAGS) $(OBJS) $(LIBFTFLAGS) -o $(NAME)
+	@echo "$(YELLOW)Done $(RESET)"
 ## link the object files with the libraries.
 
-$(OBJDIR)%.o: $(SRCSDIR)%.c | $(OBJDIR)
-	$(CC) $(CFLAGS) $(INCLUDE) -c $< -o $@
 # Represents the first prerequisite (dependency) in the rule.
 # It holds the name of the file that the rule is supposed to build (target file). 
 # -c : instructs the compiler to generate object files (*.o) without linking
 #Specifies the output file or executable name.
-
 $(LIBFT): 
 	@make -C $(LIBFTDIR)
 #prefix to suppress the echoing of the command being executed
@@ -59,15 +70,19 @@ $(LIBFT):
 #It allows you to run make from a different directory than where the Makefile is located
 
 $(OBJDIR):
-	mkdir -p $(OBJDIR)
+	@mkdir -p $(OBJDIR)
 #creates the directory
 #The -p option ensures that it creates the parent directories if they don't exist.
 
 clean : 
-	rm -rf $(OBJDIR)
+	@echo "$(CYAN)Cleaning pipex objects files$(RESET)"
+	@rm -rf $(OBJDIR)
+	@echo "$(YELLOW)Done$(RESET)"
 
 fclean: clean
-	rm -f $(NAME)
+	@echo "$(CYAN)Cleaning pipex executable $(RESET)"
+	@rm -f $(NAME)
+	@echo "$(YELLOW)Done$(RESET)"
 
 re : fclean all
 

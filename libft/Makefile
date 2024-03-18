@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aaires-b <aaires-b@student.42.fr>          +#+  +:+       +#+         #
+#    By: aaires-b <aaires-b@@student.42.fr>         +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/08/29 15:43:23 by anabelmonte       #+#    #+#              #
-#    Updated: 2023/10/02 12:16:42 by aaires-b         ###   ########.fr        #
+#    Updated: 2024/03/18 14:07:38 by aaires-b         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,21 +34,39 @@ OFILESB = $(BFILES:.c=.o)
 CC		= cc
 CFLAGS	= -Wall -Wextra -Werror
 
+RESET=\033[0m
+BOLD=\033[1m
+RED=\033[31m
+GREEN=\033[32m
+YELLOW=\033[33m
+BLUE=\033[34m
+MAGENTA=\033[35m
+CYAN=\033[36m
+
 all: $(NAME)
 
-${NAME} : ${OFILES}	
+%.o : %.c
+	@$(CC) $(CFLAGS) -c $< -o $@
 
-	ar rcs $(NAME) $(OFILES)
+${NAME} : ${OFILES}	
+	@echo "$(GREEN)Compiling libft $(RESET)"
+	@ar rcs $(NAME) $(OFILES)
+	@echo "$(YELLOW)Done $(RESET)"
 
 bonus: $(OFILES)	$(OFILESB)
-
-	ar rcs $(NAME) $(OFILES) $(OFILESB)
+	@echo "$(GREEN)Compiling libft with $(MAGENTA)bonus$(RESET)"
+	@ar rcs $(NAME) $(OFILES) $(OFILESB)
+	@echo "$(YELLOW)Done$(RESET)"
 
 clean:
-	rm -f $(OFILES) $(OFILESB)
+	@echo "$(CYAN)Cleaning libft objects files$(RESET)"
+	@rm -f $(OFILES) $(OFILESB)
+	@echo "$(YELLOW)Done$(RESET)"
 
 fclean: clean
-	rm -f $(NAME)
+	@echo "$(CYAN)Cleaning libft library file$(RESET)"
+	@rm -f $(NAME)
+	@echo "$(YELLOW)Done$(RESET)"
 
 re: fclean all
 
